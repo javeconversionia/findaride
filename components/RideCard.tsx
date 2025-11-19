@@ -1,11 +1,9 @@
 export default function RideCard({ ride }: { ride: any }) {
   return (
-    <div className="border rounded p-4 shadow-sm">
-      <h3 className="font-semibold text-lg">{ride.title}</h3>
-      <p className="text-gray-500 mt-1">{ride.description}</p>
-      <button className="mt-3 bg-blue-600 text-white px-3 py-2 rounded">
-        View Ride
-      </button>
+    <div className="border rounded-lg p-4 bg-white shadow">
+      <h2 className="text-lg font-semibold">{ride.service}</h2>
+      <p className="text-gray-600 text-sm">ETA: {ride.eta} min</p>
+      <p className="font-medium mt-2">${ride.price.toFixed(2)}</p>
     </div>
   );
 }
