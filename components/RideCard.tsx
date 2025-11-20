@@ -1,27 +1,19 @@
-interface RideCardProps {
-  driver: string;
-  from: string;
-  to: string;
-  date: string;
-  price: number;
-}
-
-export default function RideCard({
-  driver,
-  from,
-  to,
-  date,
-  price,
-}: RideCardProps) {
+export default function RideCard({ ride }) {
   return (
-    <div className="border rounded-lg p-4 shadow-sm hover:shadow transition">
-      <div className="flex justify-between items-center mb-2">
-        <h3 className="text-lg font-semibold">{from} → {to}</h3>
-        <span className="text-blue-600 font-bold">${price}</span>
+    <div className="border rounded-xl p-4 bg-white shadow-sm">
+      <div className="font-semibold text-lg">
+        {ride.from} → {ride.to}
       </div>
 
-      <p className="text-sm text-gray-500 mb-1">Driver: {driver}</p>
-      <p className="text-sm text-gray-500">Date: {date}</p>
+      <div className="text-gray-600 mt-1">
+        Date: {ride.date}
+      </div>
+
+      <div className="text-gray-600">
+        Seats: {ride.seatsAvailable}
+      </div>
+
+      <div className="text-blue-600 font-bold mt-2">${ride.price}</div>
     </div>
   );
 }

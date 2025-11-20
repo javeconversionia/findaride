@@ -1,39 +1,52 @@
 import { NextResponse } from "next/server";
-import { mockRides } from "@lib/mockRides";
+
+// Mock DB
+const rides = [
+  {
+    id: "1",
+    from: "City A",
+    to: "City B",
+    date: "2025-11-20",
+    seatsAvailable: 3,
+    price: 25,
+  },
+  {
+    id: "2",
+    from: "City A",
+    to: "City C",
+    date: "2025-11-21",
+    seatsAvailable: 2,
+    price: 40,
+  },
+  {
+    id: "3",
+    from: "City B",
+    to: "City A",
+    date: "2025-11-20",
+    seatsAvailable: 1,
+    price: 30,
+  },
+];
 
 export async function GET(req: Request) {
-  try {
-    const { searchParams } = new URL(req.url);
+  const { searchParams } = new URL(req.url);
 
-    const from = searchParams.get("from")?.trim().toLowerCase();
-    const to = searchParams.get("to")?.trim().toLowerCase();
-    const date = searchParams.get("date");
-    const passengers = Number(searchParams.get("passengers") ?? 1);
+  const from = searchParams.get("from") || "";
+  const to = searchParams.get("to") || "";
+  const date = searchParams.get("date") || "";
+  const passengers = parseInt(searchParams.get("passengers") || "1");
 
-    // Basic parameter validation
-    if (!from || !to || !date) {
-      return NextResponse.json(
-        { error: "Missing required parameters: from, to, date." },
-        { status: 400 }
-      );
-    }
+  // Filter mock rides
+  const results = rides.filter(
+    (r) =>
+      r.from.toLowerCase() === from.toLowerCase() &&
+      r.to.toLowerCase() === to.toLowerCase() &&
+      r.date === date &&
+      r.seatsAvailable >= passengers
+  );
 
-    // Filter rides based on search params
-    const results = mockRides.filter((ride) => {
-      return (
-        ride.from.toLowerCase() === from &&
-        ride.to.toLowerCase() === to &&
-        ride.date === date &&
-        ride.seats >= passengers
-      );
-    });
-
-    return NextResponse.json({ results });
-  } catch (error) {
-    console.error("Ride Search API Error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json({
+    success: true,
+    results,
+  });
 }
