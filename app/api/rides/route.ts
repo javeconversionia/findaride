@@ -31,6 +31,13 @@ const rides = [
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
 
+  const id = searchParams.get("id");
+
+  if (id) {
+    const ride = rides.find((r) => r.id === id);
+    return NextResponse.json({ ride });
+  }
+
   const from = searchParams.get("from") || "";
   const to = searchParams.get("to") || "";
   const date = searchParams.get("date") || "";
