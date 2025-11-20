@@ -1,6 +1,6 @@
-import NavBar from "@/components/NavBar";
-import RideCard from "@/components/RideCard";
-import EmptyState from "@/components/EmptyState";
+import NavBar from "@components/NavBar";
+import RideCard from "@components/RideCard";
+import EmptyState from "@components/EmptyState";
 
 export default async function ResultsPage() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/rides`, {
