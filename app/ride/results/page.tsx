@@ -1,23 +1,50 @@
-import NavBar from "@components/NavBar";
-import RideCard from "@components/RideCard";
-import EmptyState from "@components/EmptyState";
+import RideCard from "@/components/RideCard";
+import EmptyState from "@/components/EmptyState";
 
-export default async function ResultsPage() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/rides`, {
+export default async function ResultsPage({ searchParams }: any) {
+
+  // Build full query string safely (cross-platform)
+  const query = new URLSearchParams();
+
+  if (searchParams) {
+    Object.keys(searchParams).forEach((key) => {
+      const value = searchParams[key];
+      if (typeof value === "string") {
+        query.append(key, value);
+      }
+    });
+  }
+
+  // Build absolute URL (Windows-friendly)
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    `http://localhost:3000`;  // dev fallback, safe on Windows
+
+  const res = await fetch(`${baseUrl}/api/rides?${query.toString()}`, {
     cache: "no-store",
   });
-  const { rides } = await res.json();
+
+  if (!res.ok) {
+    console.error("API error:", await res.text());
+    return <div>Error fetching rides.</div>;
+  }
+
+  const data = await res.json();
+  const results = data.results || [];
 
   return (
-    <>
-      <NavBar />
-      <div className="max-w-3xl mx-auto px-6 py-10 space-y-4">
-        <h1 className="text-2xl font-semibold mb-4">Available Rides</h1>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Available Rides</h1>
 
-        {rides.length === 0 ? (
-          <EmptyState message="No rides found. Try adjusting your search." />
-        ) : rides.map((ride: any) => <RideCard key={ride.id} ride={ride} />)}
-      </div>
-    </>
+      {results.length === 0 ? (
+        <EmptyState message="No rides found for your search." />
+      ) : (
+        <div className="grid gap-4">
+          {results.map((ride: any) => (
+            <RideCard key={ride.id} ride={ride} />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
